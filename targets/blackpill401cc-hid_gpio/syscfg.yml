@@ -1,0 +1,11 @@
+syscfg.vals:
+    STM32_CLOCK_LSE: 1
+    STM32_CLOCK_LSI: 0
+
+    OS_TICKS_PER_SEC: 1024
+    OS_TICKS_USE_RTC: 1
+    OS_CPUTIME_FREQ: 32768
+    SHELL: 0
+
+    # example GPIO for ease start
+    HID_GPIO_PIN0: LED_BLINK_PIN

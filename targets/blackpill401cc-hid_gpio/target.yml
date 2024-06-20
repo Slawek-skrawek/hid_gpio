@@ -1,0 +1,3 @@
+target.app: apps/hid_gpio
+target.bsp: hw/bsp/blackpill401cc
+target.build_profile: debug

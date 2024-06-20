@@ -1,0 +1,35 @@
+target.app: "@mcuboot/boot/mynewt"
+target.bsp: "@apache-mynewt-core/hw/bsp/bluepill"
+target.build_profile: optimized
+
+bsp.flash_map:
+    areas:
+        # System areas.
+        FLASH_AREA_BOOTLOADER:
+            device: 0
+            offset: 0x08000000
+            size: 28kB
+        FLASH_AREA_IMAGE_0:
+            device: 0
+            offset: 0x08008000
+            size: 92kB
+        FLASH_AREA_IMAGE_1:
+            device: 0
+            offset: 0x0801f000
+            size: 0kB
+        FLASH_AREA_IMAGE_SCRATCH:
+            device: 0
+            offset: 0x0801f000
+            size: 0kB
+
+        # User areas.
+        FLASH_AREA_REBOOT_LOG:
+            user_id: 0
+            device: 0
+            offset: 0x08007C00
+            size: 1kB
+        FLASH_AREA_NFFS:
+            user_id: 1
+            device: 0
+            offset: 0x08007000
+            size: 0kB

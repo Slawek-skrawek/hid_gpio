@@ -1,0 +1,11 @@
+pkg.name: "targets/bluepill-boot_dfu"
+pkg.type: target
+pkg.description: 
+pkg.author: 
+pkg.homepage:
+
+pkg.deps.'UPDATE_MODE=="dfu"':
+    - "@apache-mynewt-core/hw/usb/tinyusb/dfu"
+
+pkg.deps.'UPDATE_MODE=="msc"':
+    - "@apache-mynewt-core/hw/usb/tinyusb/msc_fat_view"
