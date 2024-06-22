@@ -27,9 +27,10 @@ project.repositories:
 #
 repository.apache-mynewt-core:
     type: github
-    vers: 0.0.0
-    user: apache
-    repo: mynewt-core
+    vers: 1e45c3df9d88cfc7d97aa9ac59518b3b8f3ee7bf-commit
+    branch: master
+    user: kasjer
+    repo: incubator-mynewt-core
 
 repository.mcuboot:
     type: github
