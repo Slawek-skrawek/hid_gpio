@@ -57,7 +57,7 @@
       HID_REPORT_SIZE  ( 3                                       ) ,\
       HID_OUTPUT       ( HID_CONSTANT                            ) ,\
   HID_COLLECTION_END, \
-  HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP )                        ,\
+  HID_USAGE_PAGE_N ( HID_USAGE_PAGE_VENDOR, 2)                     ,\
   HID_USAGE      ( 0 )                                             ,\
   HID_COLLECTION ( HID_COLLECTION_APPLICATION )                    ,\
     /* Report ID if any */\
