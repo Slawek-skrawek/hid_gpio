@@ -17,7 +17,7 @@
 # under the License.
 #
 
-project.name: "my_project"
+project.name: "hid_gpio"
 
 project.repositories:
     - apache-mynewt-core
