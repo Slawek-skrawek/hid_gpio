@@ -222,6 +222,28 @@ const char *string_desc_arr[] = {
 
 static uint16_t desc_string[MYNEWT_VAL(USBD_STRING_DESCRIPTOR_MAX_LENGTH) + 1];
 
+uint16_t *desc_string_from_ascii(uint16_t *uchars, size_t uchar_count, const char *astr)
+{
+    if (astr == NULL) {
+        uchars = NULL;
+    } else {
+        size_t len = strlen(astr);
+        if (len > uchar_count - 1) {
+            len = uchar_count - 1;
+        }
+        for (size_t i = 0; i < len; ++i) {
+            uchars[i + 1] = astr[i];
+        }
+        if (len > 0) {
+            uchars[0] = (TUSB_DESC_STRING << 8) | (2 * len + 2);
+        } else {
+            uchars = NULL;
+        }
+    }
+
+    return uchars;
+}
+
 /*
  * Invoked when received GET STRING DESCRIPTOR request
  * Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
@@ -229,35 +251,19 @@ static uint16_t desc_string[MYNEWT_VAL(USBD_STRING_DESCRIPTOR_MAX_LENGTH) + 1];
 const uint16_t *
 tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 {
-    int char_num = 0;
-    int i;
-    const char *str;
+    uint16_t *desc_str = desc_string;
 
     if (index == 0) {
         desc_string[1] = MYNEWT_VAL(USBD_LANGID);
-        char_num = 1;
     } else if (index == 1) {
-        /* TODO: Add function call to get serial number */
-        desc_string[1] = '2';
-        char_num = 1;
+        desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), "2");
     } else if (index - 2 < ARRAY_SIZE(string_desc_arr)) {
-        str = string_desc_arr[index - 2];
-
-        char_num = strlen(str);
-        if (char_num >= ARRAY_SIZE(desc_string)) {
-            char_num = ARRAY_SIZE(desc_string);
-        }
-
-        for (i = 0; i < char_num; ++i) {
-            desc_string[1 + i] = str[i];
-        }
+        desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), string_desc_arr[index - 2]);
+    } else if (index == 32) {
+        desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), "HASH:hid_gpio:"MYNEWT_VAL(REPO_HASH_HID_GPIO));
+    } else if (index == 33) {
+        desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), "HASH:apache-mynewt_core:"MYNEWT_VAL(REPO_HASH_APACHE_MYNEWT_CORE));
     }
 
-    if (char_num) {
-        /* Encode length in first byte */
-        desc_string[0] = (TUSB_DESC_STRING << 8) | (2 * char_num + 2);
-        return desc_string;
-    } else {
-        return NULL;
-    }
+    return desc_str;
 }

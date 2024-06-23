@@ -51,7 +51,7 @@ syscfg.defs:
         value: 50
     USBD_STRING_DESCRIPTOR_MAX_LENGTH:
         description: Maximum length of string descriptor in characters
-        value: 31
+        value: 64
 
     USBD_LANGID:
         description: Language ID as specified by usb.org
