@@ -116,7 +116,13 @@ void tud_resume_cb(void)
     host_state = HOST_RUNNING;
 }
 
-static uint8_t pins_config[8];
+// 0 - out 0
+// 1 - out 1
+// u - not configured
+// i - input no pull
+// d - input pull down
+// u - input pull up
+static uint8_t pins_state[8] = { 'u', 'u', 'u', 'u', 'u', 'u', 'u', 'u' };
 
 /*
  * Invoked when received GET_REPORT control request
@@ -130,7 +136,8 @@ tud_hid_get_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_t
     (void)report_id;
 
     if (report_id == 5 && reqlen == 8) {
-        memcpy(buffer, pins_config, 8);
+        memcpy(buffer, pins_state, 8);
+        return 8;
     }
 
     return 0;
@@ -172,9 +179,9 @@ tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_t
         }
     } else if (report_id == 5 && report_type == HID_REPORT_TYPE_FEATURE) {
         // Feature report 5, each bit activates GPIO defined in syscfg HID_GPIO_PINx
-        memcpy(pins_config, buffer, 8);
         for (int i = 0; i < 8; ++i) {
-            switch (pins_config[i]) {
+            bool ignore = false;
+            switch (buffer[i]) {
             case '0':
                 hal_gpio_init_out(pins[i], 0);
                 break;
@@ -182,9 +189,20 @@ tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_t
                 hal_gpio_init_out(pins[i], 1);
                 break;
             case 'i':
-                hal_gpio_deinit(pins[i]);
-            default:
+                hal_gpio_init_in(pins[i], HAL_GPIO_PULL_NONE);
                 break;
+            case 'd':
+                hal_gpio_init_in(pins[i], HAL_GPIO_PULL_DOWN);
+                break;
+            case 'u':
+                hal_gpio_init_in(pins[i], HAL_GPIO_PULL_UP);
+                break;
+            default:
+                ignore = true;
+                break;
+            }
+            if (!ignore) {
+                pins_state[i] = buffer[i];
             }
         }
     }
