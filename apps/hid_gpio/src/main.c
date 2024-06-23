@@ -32,7 +32,7 @@
 #include <device/dcd.h>
 
 /* For LED toggling */
-int g_led_pin;
+int g_led_pin = LED_BLINK_PIN;
 
 /* The timer callout */
 static struct os_callout blinky_callout;
@@ -213,6 +213,17 @@ void
 mynewt_main(int argc, char **argv)
 {
     sysinit();
+
+#ifdef LED_BLINK_PIN
+    hal_gpio_init_out(LED_BLINK_PIN, 0);
+#endif
+    for (int i = 0; i < 8; ++i) {
+        if (pins[i] < 0) {
+            continue;
+        }
+
+        hal_gpio_init_out(pins[i], 0);
+    }
 
     console_printf("HID_GPIO started\n");
     console_printf("Reset reason %s\n", hal_reset_cause_str());
