@@ -255,6 +255,7 @@ tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 
     if (index == 0) {
         desc_string[1] = MYNEWT_VAL(USBD_LANGID);
+        desc_string[0] = (TUSB_DESC_STRING << 8) | (2 * 1 + 2);
     } else if (index == 1) {
         desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), "2");
     } else if (index - 2 < ARRAY_SIZE(string_desc_arr)) {
