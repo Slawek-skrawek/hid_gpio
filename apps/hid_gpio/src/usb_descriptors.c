@@ -25,6 +25,7 @@
 #include <os/util.h>
 #include <console/console.h>
 #include <hal/hal_gpio.h>
+#include <hal/hal_bsp.h>
 
 #define USBD_PRODUCT_RELEASE_NUMBER MYNEWT_VAL(USBD_PRODUCT_RELEASE_NUMBER)
 
@@ -244,6 +245,14 @@ uint16_t *desc_string_from_ascii(uint16_t *uchars, size_t uchar_count, const cha
     return uchars;
 }
 
+static uint8_t
+hex_digit(int v)
+{
+    v &= 0xF;
+
+    return (v < 10) ? (v + '0') : (v + 'A' - 10);
+}
+
 /*
  * Invoked when received GET STRING DESCRIPTOR request
  * Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
@@ -257,7 +266,17 @@ tud_descriptor_string_cb(uint8_t index, uint16_t langid)
         desc_string[1] = MYNEWT_VAL(USBD_LANGID);
         desc_string[0] = (TUSB_DESC_STRING << 8) | (2 * 1 + 2);
     } else if (index == 1) {
-        desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), "2");
+        int len = hal_bsp_hw_id_len();
+        uint8_t serial[2 * len + 1];
+        hal_bsp_hw_id(serial + len, len);
+        uint8_t *src = serial + len;
+        uint8_t *dst = serial;
+        for (int i = 0; i < len; ++i) {
+            *dst++ = hex_digit(*src >> 4);
+            *dst++ = hex_digit(*src++);
+        }
+        *dst = 0;
+        desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), (const char *)serial);
     } else if (index - 2 < ARRAY_SIZE(string_desc_arr)) {
         desc_str = desc_string_from_ascii(desc_string, ARRAY_SIZE(desc_string), string_desc_arr[index - 2]);
     } else if (index == 32) {
