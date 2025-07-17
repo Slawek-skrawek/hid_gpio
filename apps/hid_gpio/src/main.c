@@ -222,7 +222,7 @@ mynewt_main(int argc, char **argv)
             continue;
         }
 
-        hal_gpio_init_out(pins[i], 0);
+        hal_gpio_init_out(pins[i], 1);
     }
 
     console_printf("HID_GPIO started\n");
