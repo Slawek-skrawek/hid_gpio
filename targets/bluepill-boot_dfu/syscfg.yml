@@ -5,7 +5,7 @@ syscfg.defs:
             - none
             - msc
             - dfu
-        value: msc
+        value: dfu
 
 syscfg.vals:
     MYNEWT_DOWNLOADER: stm32_programmer_cli
