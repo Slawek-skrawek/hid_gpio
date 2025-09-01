@@ -183,10 +183,10 @@ tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_t
             bool ignore = false;
             switch (buffer[i]) {
             case '0':
-                hal_gpio_init_out(pins[i], 0);
+                hal_gpio_init_out(pins[i], 1 ^ MYNEWT_VAL_HID_GPIO_ACTIVE_LEVEL);
                 break;
             case '1':
-                hal_gpio_init_out(pins[i], 1);
+                hal_gpio_init_out(pins[i], MYNEWT_VAL_HID_GPIO_ACTIVE_LEVEL);
                 break;
             case 'i':
                 hal_gpio_init_in(pins[i], HAL_GPIO_PULL_NONE);

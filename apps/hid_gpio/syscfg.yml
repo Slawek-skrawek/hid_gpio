@@ -96,6 +96,9 @@ syscfg.defs:
     HID_GPIO_PIN7:
         description: GPIO for bit 0
         value: -1
+    HID_GPIO_ACTIVE_LEVEL:
+        description: Active level for GPIO
+        value: 1
 
 syscfg.vals.SHELL:
     SHELL_TASK: 1
